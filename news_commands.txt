@@ -1,0 +1,98 @@
+user1 = User.objects.create(username='mike', first_name='frank')
+user2 = User.objects.create(username='seny', first_name='ber')
+
+user3 = User.objects.create(username='nik35', first_name='Nikita')
+user4 = User.objects.create(username='serg28', first_name='Sergey')
+
+Author.objects.create(authorUser=user1)
+Author.objects.create(authorUser=user2)
+
+Author.objects.create(authorUser=user3)
+Author.objects.create(authorUser=user4)
+
+Category.objects.create(name='it')
+Category.objects.create(name='education')
+
+Category.objects.create(name='Sport')
+Category.objects.create(name='Science')
+
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='mike')), categoryType='NW', postTitle='gggg', postText='dddddddddddddddd')
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='mike')), categoryType='AR', postTitle='hhhhh', postText='lllllllll')
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='seny')), categoryType='AR', postTitle='kkkkkhhhhh', postText=';;;;fffflllllllll')
+
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='nik35')), categoryType='NW', postTitle='Спартак выиграл', postText='Главный тренер «Спартака» Гильермо Абаскаль отметил, что команда не смогла реализовать преимущество в матче с «Уралом».')
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='nik35')), categoryType='AR', postTitle='Свежие новости науки', postText='Экипаж МКС 15 марта проведет тренировку спуска на Землю на аварийном корабле «Союз МС-22».')
+Post.objects.create(author=Author.objects.get(authorUser=User.objects.get(username='serg28')), categoryType='AR', postTitle='Как победить Спартак', postText='Промес забил и в матче с «Уралом», футболист отличился на 21-й минуте встречи.')
+
+p1 = Post.objects.get(pk=1)
+p2 = Post.objects.get(pk=2)
+p3 = Post.objects.get(pk=3)
+c1 = Category.objects.create(name='it')
+c2 = Category.objects.create(name='education')
+
+post4 = Post.objects.get(pk=4)
+post5 = Post.objects.get(pk=5)
+post6 = Post.objects.get(pk=6)
+categ3 = Category.objects.create(name='Sport')
+categ4 = Category.objects.create(name='Science')
+
+p1.postCategory.add(c1)
+p2.postCategory.add(c1,c2)
+p3.postCategory.add(c2)
+post4.postCategory.add(categ3)
+post5.postCategory.add(categ4)
+post6.postCategory.add(categ3, categ4)
+
+Comment.objects.create(commentUser=User.objects.get(username='nik35'), commentPost=Post.objects.get(pk=3), commentText='Супер')
+Comment.objects.create(commentUser=User.objects.get(username='nik35'), commentPost=Post.objects.get(pk=4), commentText='Фу')
+Comment.objects.create(commentUser=User.objects.get(username='serg28'), commentPost=Post.objects.get(pk=5), commentText='Так держать')
+Comment.objects.create(commentUser=User.objects.get(username='serg28'), commentPost=Post.objects.get(pk=3), commentText='Класс')
+
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=2).like()
+Post.objects.get(pk=3).like()
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=2).like()
+Post.objects.get(pk=1).like()
+
+Post.objects.get(pk=4).like()
+Post.objects.get(pk=5).like()
+Post.objects.get(pk=6).like()
+Post.objects.get(pk=4).like()
+Post.objects.get(pk=5).like()
+Post.objects.get(pk=4).like()
+
+Post.objects.get(pk=4).dislike()
+Post.objects.get(pk=5).dislike()
+Post.objects.get(pk=6).dislike()
+
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=2).like()
+Comment.objects.get(pk=3).like()
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=2).like()
+Comment.objects.get(pk=1).like()
+
+Comment.objects.get(pk=4).like()
+Comment.objects.get(pk=5).like()
+Comment.objects.get(pk=6).like()
+Comment.objects.get(pk=4).like()
+Comment.objects.get(pk=5).like()
+Comment.objects.get(pk=4).like()
+
+Comment.objects.get(pk=4).dislike()
+Comment.objects.get(pk=5).dislike()
+Comment.objects.get(pk=5).dislike()
+
+Author.objects.get(authorUser=User.objects.get(username='mike')).update_rating
+Author.objects.get(authorUser=User.objects.get(username='seny')).update_rating
+
+Author.objects.get(authorUser=User.objects.get(username='nik35'))
+Author.objects.get(authorUser=User.objects.get(username='serg28')).authorRating
+
+best = Author.objects.all().order_by('-authorRating').values('authorUser', 'authorRating')[0]
+
+bestpost = Post.objects.all().order_by('-postRating').values('datetimeCreation', 'postRating', 'postTitle')[0]
+
+
+
