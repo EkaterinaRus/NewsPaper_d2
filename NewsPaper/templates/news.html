@@ -14,9 +14,9 @@ News
     <p>Количество новостей: {{ news|length }}</p>
     {% if news %}
         {% for newsdetail in news %}
-            <h2>{{ newsdetail.postTitle }}</h2>
+            <h2>{{ newsdetail.postTitle|censor:'***' }}</h2>
             <p>{{ newsdetail.datetimeCreation|date:'d F Y' }}</p>
-            <p>{{ newsdetail.postText|truncatewords:50 }}</p>
+            <p>{{ newsdetail.postText|truncatewords:50|censor:'***' }}</p>
         {% endfor %}
     {% else %}
         <h2>Новостей нет</h2>

@@ -11,10 +11,9 @@ News
 <!-- В контенте на странице мы выводим все товары -->
 {% block content %}
     {% if newsdetail %}
-            <h2>{{ newsdetail.postTitle }}</h2>
-            <h2>{{ newsdetail.postTitle|censor:'спартак' }}</h2>
+            <h2>{{ newsdetail.postTitle|censor:'***' }}</h2>
             <p>{{ newsdetail.datetimeCreation|date:'d F Y G:i' }}</p>
-            <p>{{ newsdetail.postText }}</p>
+            <p>{{ newsdetail.postText|censor:'***' }}</p>
     {% else %}
         <h2>Новостей нет</h2>
     {% endif %}
