@@ -9,12 +9,16 @@
 {% block content %}
     <h1>Все новости</h1>
     <p>Количество новостей: {{ news|length }}</p>
-    {% for newsdetail in news %}
-        <h2 class="news-title"> <a href="{% url 'newsdetail' newsdetail.id %}">{{ newsdetail.postTitle|censor:'***' }}</a> </h2>
+
+    <form method="GET">
+        {{ filter.form }} <!-- Форму от фильтров за нас сделает Django. А вот кнопку, увы, придётся делать самому -->
+        <input type="submit" value="Найти">
+    </form>
+
+    {% for newsdetail in filter.qs %}
+        <h2 class="news-title"> {{ newsdetail.postTitle|censor:'***' }} </h2>
         <p>{{ newsdetail.datetimeCreation|date:'d F Y' }}</p>
         <p>{{ newsdetail.postText|truncatewords:50|censor:'***' }}</p>
-        <a href="{% url 'news_edit' newsdetail.id %}"><u>Редактировать</u></a> <!-- добавим ссылку на редактирование товара-->
-        <a href="{% url 'news_delete' newsdetail.id %}"><u>Удалить</u></a>
     {% endfor %}
 
 <!-- Проверяем что поддерживается постраничный вывод -->

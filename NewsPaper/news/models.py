@@ -39,6 +39,9 @@ class Post(models.Model):
     postText = models.TextField()
     postRating = models.FloatField(default=0.0)
 
+    def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с товаром
+        return f'/news/{self.id}'
+
     def like(self):
         self.postRating += 1
         self.save()

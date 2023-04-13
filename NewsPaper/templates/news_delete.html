@@ -10,9 +10,15 @@ News
 
 <!-- В контенте на странице мы выводим все товары -->
 {% block content %}
-
+            <h1>Вы действительно хотите удалить данную новость?</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить">
+</form>
             <h2>{{ newsdetail.postTitle|censor:'***' }}</h2>
             <p>{{ newsdetail.datetimeCreation|date:'d F Y G:i' }}</p>
             <p>{{ newsdetail.postText|censor:'***' }}</p>
 
+
 {% endblock content %}
+
