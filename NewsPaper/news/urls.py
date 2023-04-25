@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import PostList, PostDetail, PostSearchList, PostAddView, PostEditView, PostDeleteView  # импортируем наше представление
+from .views import PostList, PostDetail, PostSearchList, PostAddView, PostEditView, PostDeleteView, PostCategoryView
+    # subscribe_to_category, unsubscribe_to_category
 
 urlpatterns = [
     # path — означает путь. В данном случае путь ко всем товарам у нас останется пустым, позже станет ясно почему
@@ -9,8 +10,11 @@ urlpatterns = [
     # pk — это первичный ключ товара, который будет выводиться у нас в шаблон
     path('search', PostSearchList.as_view()),
     path('add/', PostAddView.as_view(), name='news_add'),  # Ссылка на создание товара
-
     path('<int:pk>/edit', PostEditView.as_view(), name='news_edit'),  # Ссылка на создание товара
-
     path('<int:pk>/delete', PostDeleteView.as_view(), name='news_delete'),
+    path('category/<int:pk>/', PostCategoryView.as_view(), name='category'),
+
+    # path('subscribe/<int:pk>/', subscribe_to_category, name='subscribe'),
+    # path('unsubscribe/<int:pk>/', unsubscribe_to_category, name='unsubscribe'),
+
 ]

@@ -1,11 +1,18 @@
 # from django.shortcuts import render
+from email.headerregistry import Group
+from pydoc import resolve
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 # импортируем класс, который говорит нам о том, что в этом представлении мы будем выводить список объектов из БД
 # импортируем класс получения деталей объекта
-from .models import Post
+from .models import Post, Category
 from .filters import PostFilter
 from .forms import PostForm
-from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.urls import reverse
 
 
 class PostList(ListView):
@@ -49,13 +56,18 @@ class PostAddView(CreateView):
     form_class = PostForm
 
 
-class PostEditView(UpdateView):
+class PostEditView(LoginRequiredMixin, UpdateView):
     template_name = 'news_add.html'
     form_class = PostForm
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_authors'] = not self.request.user.groups.filter(name='authors').exists()
+        return context
 
 
 # дженерик для удаления товара
@@ -64,6 +76,54 @@ class PostDeleteView(DeleteView):
     template_name = 'news_delete.html'  # название шаблона будет product.html
     context_object_name = 'newsdetail'
     success_url = '/news/'
+
+
+class PostCategoryView(ListView):
+    model = Post
+    template_name = 'category.html'
+    context_object_name = 'news'
+    queryset = Post.objects.order_by('-id')
+    paginate_by = 3
+
+    def get_queryset(self):
+        self.id = resolve(self.request.path_info).kwargs['pk']
+        c = Category.objects.get(id=self.id)
+        queryset = Post.objects.filter(category=c)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        category = Category.objects.get(id=self.id)
+        sibscribed = category.subscribers.filter(email=user.email)
+        if not sibscribed:
+            context['category'] = category
+        return context
+
+
+# def subscribe_to_category(request, pk):
+#     user = request.user
+#     category = Category.objects.get(id=pk)
+#
+#     if not category.subscribers.filter(id=user.id).exists():
+#         category.subscribers.add(user)
+#         html = render_to_string(
+#             'mail/subscribed.html',
+#             {
+#                 'categories': category,
+#                 'user': user,
+#             },
+#         )
+#
+#         msg = EmailMultiAlternatives(
+#             subject=f'{category} subsription',
+#             body='',
+#             from_email='peterbadson@yandex.ru',
+#             to=['skavik46111@gmail.com'],  # это то же, что и recipients_list
+#         )
+#         msg.attach_alternative(html_content, "text/html")  # добавляем html
+#
+#         msg.send()  # отсылаем
 
 
 

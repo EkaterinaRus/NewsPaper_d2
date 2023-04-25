@@ -1,0 +1,21 @@
+{% extends 'flatpages/default.html' %}
+<!-- Название  -->
+{% block title %} News {% endblock title %}
+
+<!-- В контенте на странице мы выводим все новости -->
+{% block content %}
+
+{% if category.id %}
+<div>
+  <em>
+    Subscribe to
+    <strong>{{ category }}</strong>>
+  </em>
+  <a href="">
+    Subscribe
+  </a>>
+
+</div>>
+{% endif %}
+
+{% endblock content %}
