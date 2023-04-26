@@ -8,7 +8,7 @@
 <div> Здесь может содержаться персональная информация для каждого пользователя </div>
 
 {% if is_not_authors %}
-<button> <a href="/accounts/profile/">Хочу стать автором!</a> </button>
+<button> <a href="{% url 'upgrade' %}">Хочу стать автором!</a> </button>
 {% endif %}
 
 <button> <a href="/news/">На главную</a> </button>
