@@ -11,7 +11,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Post, Category
 from .filters import PostFilter
 from .forms import PostForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+
 # from django.urls import reverse
 
 
@@ -51,14 +53,16 @@ class PostSearchList(ListView):
         return context
 
 
-class PostAddView(CreateView):
+class PostAddView(PermissionRequiredMixin, CreateView):
     template_name = 'news_add.html'
     form_class = PostForm
+    permission_required = ('news.add_post', )
 
 
-class PostEditView(LoginRequiredMixin, UpdateView):
+class PostEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'news_add.html'
     form_class = PostForm
+    permission_required = ('news.change_post', )
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
