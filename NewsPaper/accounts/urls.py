@@ -5,7 +5,7 @@ from .views import upgrade_me
 
 urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
-    path('profile/', upgrade_me, name='profile'),
+    path('upgrade/', upgrade_me, name='upgrade'),
 ]
 
 
