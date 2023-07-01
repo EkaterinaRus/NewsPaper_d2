@@ -15,4 +15,10 @@ News
             <p>{{ newsdetail.datetimeCreation|date:'d F Y G:i' }}</p>
             <p>{{ newsdetail.postText|censor:'***' }}</p>
 
+
+    {% for с in news.category.values %}
+        <a href="{% url 'category.html' c.id %}">{{ c.name }}</a>
+    {% endfor %}
+
 {% endblock content %}
+

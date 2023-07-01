@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Здравствуй {{ email.username }}. Новая статья в твоём любимом разделе!</h2>
+    <h3>{{ newsdetail.postTitle|censor:'***' }}</h3>>
+    <p> {{ newsdetail.postText|truncatewords:50|censor:'***' }}</p>
+</body>
+</html>

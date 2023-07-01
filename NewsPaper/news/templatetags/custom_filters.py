@@ -9,8 +9,8 @@ register = template.Library()  # если мы не зарегестрируем
 # что это именно фильтр, а не простая функция
 def censor(value, arg):  # первый аргумент здесь — это то значение, к которому надо применить фильтр,
     # второй аргумент — это аргумент фильтра, т.е. примерно следующее будет в шаблоне value|multiply:arg
-    res = re.sub(r'(?i)хуй(?=\W)', arg, value)
-    res1 = re.sub(r'(?i)блять(?=\W)', arg, res)
+    res = re.sub(r'(?i)какашка(?=\W)', arg, value)
+    res1 = re.sub(r'(?i)букашка(?=\W)', arg, res)
     return res1
 
 
