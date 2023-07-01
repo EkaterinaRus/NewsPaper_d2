@@ -1,6 +1,7 @@
 # from django.contrib import admin
 
-from django.contrib import adminfrom .models import Post, Category, PostCategory, Comment, Author
+from django.contrib import admin
+from .models import Post, Category, PostCategory, Comment, Author
 
 
 class PostAdmin(admin.ModelAdmin):
