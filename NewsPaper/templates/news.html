@@ -7,10 +7,24 @@
 
 <!-- В контенте на странице мы выводим все новости -->
 {% block content %}
+    {% load cache %}
+        {% cache 30 header %}
+            {% for category in categories %}
+                <a href="{#% url 'category.html' c.id %#}"> {{ category.name }}</a>
+            {% endfor %}
+        {% endcache %}
+
     <h1>Все новости</h1>
     <p>Количество новостей: {{ news|length }}</p>
+
     {% for newsdetail in news %}
         <h2 class="news-title"> <a href="{% url 'newsdetail' newsdetail.id %}">{{ newsdetail.postTitle|censor:'***' }}</a> </h2>
+        <p>{{ categorys }}</p>
+
+    {% for с in news.category.values %}
+        <a href="{% url 'category.html' c.id %}">{{ c.name }}</a>
+    {% endfor %}
+
         <p>{{ newsdetail.datetimeCreation|date:'d F Y' }}</p>
         <p>{{ newsdetail.postText|truncatewords:50|censor:'***' }}</p>
         <a href="{% url 'news_edit' newsdetail.id %}"><u>Редактировать</u></a> <!-- добавим ссылку на редактирование товара-->
