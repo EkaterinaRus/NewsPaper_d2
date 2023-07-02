@@ -14,7 +14,6 @@ from .forms import PostForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.cache import cache
 
-from ..NewsPaper.settings import DEFAULT_FROM_EMAIL
 
 
 class PostList(ListView):
