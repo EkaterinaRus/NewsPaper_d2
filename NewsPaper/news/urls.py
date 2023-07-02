@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import PostList, PostDetail, PostSearchList, PostAddView, PostEditView, PostDeleteView, CategoryDetailView, \
-    email_success
+    email_success, subscribe_to_category, unsubscribe_to_category
 from django.views.decorators.cache import cache_page
 
 urlpatterns = [
@@ -11,9 +11,8 @@ urlpatterns = [
     path('<int:pk>/edit', PostEditView.as_view(), name='news_edit'),
     path('<int:pk>/delete', PostDeleteView.as_view(), name='news_delete'),
     path('category/<int:pk>/', CategoryDetailView.as_view(), name='category_detail'),
-    path('email_success/', email_success, name='email_success')
-
-    # path('subscribe/<int:pk>/', subscribe_to_category, name='subscribe'),
-    # path('unsubscribe/<int:pk>/', unsubscribe_to_category, name='unsubscribe'),
+    path('email_success/', email_success, name='email_success'),
+    path('subscribe/<int:pk>/', subscribe_to_category, name='subscribe'),
+    path('unsubscribe/<int:pk>/', unsubscribe_to_category, name='unsubscribe'),
 
 ]

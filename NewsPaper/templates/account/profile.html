@@ -27,4 +27,14 @@
 </div>>
 {% endif %}
 
+<h4 style="padding-top: 15px">Категории на которые вы подписаны:</h4>
+{% for category in subscribed_categories %}
+    <p>{{ category.name }}</p>
+    <a href="{% url 'unsubscribe' category.id %}">
+        <button>Отписаться</button>
+    </a>
+{% empty %}
+    <p>Пользователь не подписан ни на одну категорию</p>
+{% endfor %}
+
 {% endblock content %}

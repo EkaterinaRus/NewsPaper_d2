@@ -1,20 +1,19 @@
-from datetime import datetime
-from pydoc import resolve
-
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites import requests
 from django.core.mail import EmailMultiAlternatives
+from django.core.paginator import Paginator
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
-from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post, Category
 from .filters import PostFilter
 from .forms import PostForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.cache import cache
+from django.conf import settings
 
-
+DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 class PostList(ListView):
     model = Post  # указываем модель, объекты которой мы будем выводить
@@ -23,7 +22,7 @@ class PostList(ListView):
     context_object_name = 'news'  # это имя списка, в котором будут лежать все объекты,
     # его надо указать, чтобы обратиться к самому списку объектов через HTML-шаблон
     queryset = Post.objects.order_by('-id')
-    paginate_by = 3
+    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -90,7 +89,7 @@ class PostEditView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
 
 # дженерик для удаления товара
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin,  PermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'news_delete.html'  # название шаблона будет product.html
     context_object_name = 'newsdetail'
@@ -105,8 +104,15 @@ class CategoryDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         category = self.get_object()
-        context['news'] = category.post_set.all()
+
+        news_list = category.post_set.all()
+        paginator = Paginator(news_list, 20)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context['news'] = page_obj
         context['subscribed'] = category.subscribers.filter(username=user.username).exists()
+        context['page_obj'] = page_obj
         # sibscribed = category.subscribers.filter(email=user.email)
         # if not sibscribed:
         #     context['category'] = category
@@ -116,42 +122,9 @@ def email_success(request):
     res = 'Email is verified!'
     return HttpResponse('<p>%s</p>' % res)
 
-# class AppointmentView(View):
-#     def get(self, request, *args, **kwargs):
-#         return render(request, 'make_appointment.html', {})
-#
-#     def post(self, request, *args, **kwargs):
-#         appointment = Post(
-#             client_name=request.POST['postTitle'],
-#         )
-#         appointment.save()
-#
-#         return redirect('appointments:make_appointment')
 
 
-# class PostCategoryView(ListView):
-#     model = Post
-#     template_name = 'category.html'
-#     context_object_name = 'news'
-#     queryset = Post.objects.order_by('-id')
-#     paginate_by = 3
-#
-#     def get_queryset(self):
-#         self.id = resolve(self.request.path_info).kwargs['pk']
-#         c = Category.objects.get(id=self.id)
-#         queryset = Post.objects.filter(category=c)
-#         return queryset
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         user = self.request.user
-#         category = Category.objects.get(id=self.id)
-#         sibscribed = category.subscribers.filter(email=user.email)
-#         if not sibscribed:
-#             context['category'] = category
-#         return context
-
-@login_required
+@login_required()
 def subscribe_to_category(request, pk):
     user = request.user
     category = Category.objects.get(id=pk)
@@ -159,15 +132,15 @@ def subscribe_to_category(request, pk):
         category.subscribers.add(user)
         email = user.email
         html = render_to_string(
-            'mail/subscribed.html',
+            'subscribed.html',
             {
-                'categories': category,
+                'category': category,
                 'user': user,
             },
         )
 
         msg = EmailMultiAlternatives(
-            subject='Уведомление о подписке',
+            subject=f'Уведомление о подписке на {category}',
             body='',
             from_email=DEFAULT_FROM_EMAIL,
             to=[email, ],
@@ -180,31 +153,19 @@ def subscribe_to_category(request, pk):
         except Exception as e:
             print(e)
 
-    return redirect('/sign')
+        return redirect('profile')
+    return redirect(requests.META.get('HTTP_REFERER'))
 
-# def subscribe_to_category(request, pk):
-#     user = request.user
-#     category = Category.objects.get(id=pk)
-#
-#     if not category.subscribers.filter(id=user.id).exists():
-#         category.subscribers.add(user)
-#         html = render_to_string(
-#             'email/subscribed.html',
-#             {
-#                 'categories': category,
-#                 'user': user,
-#             },
-#         )
-#
-#         msg = EmailMultiAlternatives(
-#             subject=f'{category} subsription',
-#             body='',
-#             from_email='peterbadson@yandex.ru',
-#             to=['skavik46111@gmail.com'],  # это то же, что и recipients_list
-#         )
-#         msg.attach_alternative(html_content, "text/html")  # добавляем html
-#
-#         msg.send()  # отсылаем
+@login_required()
+def unsubscribe_to_category(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    if category.subscribers.filter(id=user.id).exists():
+        category.subscribers.remove(user)
+    return redirect('profile')
+
+
+
 
 
 

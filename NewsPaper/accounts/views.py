@@ -1,12 +1,12 @@
-from email.headerregistry import Group
-from django.contrib.auth.models import Group
 from django.contrib.auth import models
-
+from news.models import Category
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from allauth.account.views import SignupView, LoginView
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
+
+
 
 
 @login_required
@@ -31,6 +31,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['subscribed_categories'] = Category.objects.filter(subscribers=user)
         context['is_not_authors'] = not self.request.user.groups.filter(name='authors').exists()
         return context
 

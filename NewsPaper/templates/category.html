@@ -11,11 +11,11 @@
 
 <div>
     {% if subscribed %}
-    <a href="{#% url 'news:unsubscribe' category.id %#}">
+    <a href="{% url 'unsubscribe' category.id %}">
         <button>Отписаться</button>
     </a>
     {% else %}
-    <a href="{#% url 'news:subscribe' category.id %#}">
+    <a href="{% url 'subscribe' category.id %}">
         <button>Подписаться</button>
     </a>
     {% endif %}
@@ -36,5 +36,21 @@
         <a href="{% url 'news_edit' newsdetail.id %}"><u>Редактировать</u></a> <!-- добавим ссылку на редактирование товара-->
         <a href="{% url 'news_delete' newsdetail.id %}"><u>Удалить</u></a>
     {% endfor %}
+
+<!--{% if page_obj.has_previous %}-->
+<!--<nav class="list-pages">-->
+<!--    <li class="page-num">-->
+<!--       <a href="?page={{ page_obj.previous_page_number }}">Previous</a>-->
+<!--    </li>-->
+<!--   {% endif %}-->
+<!--   <li class="page-num">-->
+<!--        <span class="current-page">{{ page_obj.number }}</span>-->
+<!--    </li>-->
+<!--   {% if page_obj.has_next %}-->
+<!--    <li class="page-num">-->
+<!--       <a href="?page={{ page_obj.next_page_number }}">Next</a>-->
+<!--   </li>-->
+<!--</nav>-->
+<!--{% endif %}-->
 
 {% endblock content %}
