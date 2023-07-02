@@ -1,22 +1,40 @@
 {% extends 'flatpages/default.html' %}
-<!-- Название  -->
+{% load custom_filters %}
+
 {% block title %} News {% endblock title %}
 
-<!-- В контенте на странице мы выводим все новости -->
+
 {% block content %}
 
-{% if category.id %}
+    <h1>Все новости в категории <span>{{ category.name }}</span></h1>
+
+
 <div>
-  <em>
-    Subscribe to
-    <strong>{{ category }}</strong>>
-  </em>
-  <a href="{#% url 'news:subscribe' category.id %#}">
-    Subscribe
-  </a>
+    {% if subscribed %}
+    <a href="{#% url 'news:unsubscribe' category.id %#}">
+        <button>Отписаться</button>
+    </a>
+    {% else %}
+    <a href="{#% url 'news:subscribe' category.id %#}">
+        <button>Подписаться</button>
+    </a>
+    {% endif %}
+</div>
 
-</div>>
-{% endif %}
 
+    <p>Количество новостей: {{ news|length }}</p>
+
+    {% for newsdetail in news %}
+        <h2 class="news-title"> <a href="{% url 'newsdetail' newsdetail.id %}">{{ newsdetail.postTitle|censor:'***' }}</a> </h2>
+
+        {% for category in newsdetail.postCategory.all %}
+            <a href="{% url 'category_detail' category.id %}">{{ category.name }}</a>
+        {% endfor %}
+
+        <p>{{ newsdetail.datetimeCreation|date:'d F Y' }}</p>
+        <p>{{ newsdetail.postText|truncatewords:50|censor:'***' }}</p>
+        <a href="{% url 'news_edit' newsdetail.id %}"><u>Редактировать</u></a> <!-- добавим ссылку на редактирование товара-->
+        <a href="{% url 'news_delete' newsdetail.id %}"><u>Удалить</u></a>
+    {% endfor %}
 
 {% endblock content %}

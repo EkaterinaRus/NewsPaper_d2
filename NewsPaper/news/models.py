@@ -78,7 +78,6 @@ class Post(models.Model):
         super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
         cache.delete(f'post-{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
 
-
     class Meta:
         verbose_name = 'Новость'
         verbose_name_plural = 'Новости'
